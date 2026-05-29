@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devin Michaels — Writer · Editor · Digital Media</title>
+<meta name="description" content="Devin Michaels — Emmy Award-winning multimedia producer, AP-style writer, and U.S. Air Force veteran. Photography, videography, design, editing, and project management.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spline+Sans+Mono:wght@300..600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --paper:#f3f1ea;
+  --paper-2:#ebe7dc;
+  --paper-3:#e3ded0;
+  --ink:#101d2e;
+  --ink-soft:#27384c;
+  --muted:#5b6573;
+  --line:#d6d0c1;
+  --line-strong:#c4bda9;
+  --navy:#0a1626;
+  --navy-2:#13243f;
+  --gold:#a9842f;
+  --gold-2:#d8b46a;
+  --gold-3:#e7cd97;
+  --blue:#2c618f;
+  --blue-2:#3f7cb3;
+  --white:#faf9f5;
+
+  --sans:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+  --mono:'Spline Sans Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --ease:cubic-bezier(.2,.75,.2,1);
+  --maxw:1180px;
+  --pad:clamp(1.25rem, 5vw, 4rem);
+}
+
+/* ============================================================
+   RESET / BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.55;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+  position:relative;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+ul{list-style:none}
+::selection{background:var(--ink);color:var(--paper)}
+
+/* Grain / paper texture overlay */
+.grain{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.container{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+
+/* ============================================================
+   TYPE HELPERS
+   ============================================================ */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:inline-flex;align-items:center;gap:.7rem;
+}
+.eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block}
+.serif{font-family:var(--serif)}
+.k{font-weight:700;color:var(--ink)}
+.g{color:var(--gold);font-weight:600}
+em{font-style:italic}
+
+/* ============================================================
+   SCROLL PROGRESS + BACK TO TOP
+   ============================================================ */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:120;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));
+}
+.totop{
+  position:fixed;bottom:1.6rem;right:1.6rem;z-index:90;
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid var(--line-strong);background:rgba(243,241,234,.7);
+  backdrop-filter:blur(8px);
+  display:grid;place-items:center;color:var(--ink);
+  opacity:0;transform:translateY(14px) scale(.9);pointer-events:none;
+  transition:opacity .4s var(--ease),transform .4s var(--ease),border-color .3s,background .3s;
+}
+.totop svg{width:16px;height:16px;transition:transform .3s var(--ease)}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop:hover{border-color:var(--gold);background:var(--ink);color:var(--paper)}
+.totop:hover svg{transform:translateY(-3px)}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px var(--pad);
+  border-bottom:1px solid transparent;
+  transition:padding .4s var(--ease),background .4s,border-color .4s;
+}
+.nav.scrolled{
+  background:rgba(243,241,234,.82);
+  backdrop-filter:blur(12px) saturate(1.2);
+  border-bottom-color:var(--line);
+  padding-top:11px;padding-bottom:11px;
+}
+.brand{
+  font-family:var(--sans);font-weight:800;
+  font-variation-settings:'wght' 800,'wdth' 110;
+  letter-spacing:.14em;text-transform:uppercase;font-size:.82rem;
+  display:inline-flex;align-items:center;gap:.55rem;color:var(--ink);
+}
+.brand .mk{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);display:inline-block}
+.nav__links{display:flex;gap:1.5rem;align-items:center}
+.nav__links a{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);position:relative;padding:4px 0;transition:color .3s;
+}
+.nav__links a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1.5px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease);
+}
+.nav__links a:hover{color:var(--ink)}
+.nav__links a:hover::after,.nav__links a.active::after{transform:scaleX(1)}
+.nav__links a.active{color:var(--ink)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;z-index:2;padding-top:clamp(7rem,16vh,11rem);padding-bottom:clamp(3rem,7vw,6rem)}
+.hero::before{
+  /* faint editorial column rules */
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(90deg,transparent 0,transparent calc(50% - .5px),var(--line) 50%,transparent calc(50% + .5px));
+  background-size:100% 100%;mix-blend-mode:multiply;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent);
+          mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent);
+  display:none;
+}
+.hero__grid{
+  display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(2rem,4.5vw,4.5rem);align-items:center;
+}
+.hero__eyebrow{margin-bottom:1.6rem}
+.hero__name{
+  font-family:var(--sans);
+  font-variation-settings:'wght' 720,'wdth' 108;
+  line-height:.94;letter-spacing:-.012em;
+  font-size:clamp(2.7rem,7vw,5.6rem);
+  color:var(--ink);
+}
+.hero__name span{display:block;position:relative}
+.hero__name span:last-child{color:var(--ink)}
+.hero__name span:last-child::after{
+  content:"";display:block;width:clamp(56px,9vw,104px);height:3px;margin-top:.36em;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));
+}
+.hero__roles{
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(1.05rem,2vw,1.42rem);color:var(--ink-soft);
+  margin-top:1.5rem;letter-spacing:.01em;
+}
+.hero__roles i{color:var(--gold);font-style:normal;margin:0 .35em;font-weight:600}
+.hero__lede{
+  font-family:var(--serif);font-weight:340;
+  font-size:clamp(1.02rem,1.45vw,1.22rem);line-height:1.5;color:var(--ink-soft);
+  margin-top:1.7rem;max-width:46ch;
+}
+.hero__contact{
+  display:flex;flex-wrap:wrap;gap:.4rem 1.6rem;margin-top:2rem;
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--muted);
+}
+.hero__contact a{position:relative;transition:color .3s}
+.hero__contact a:hover{color:var(--ink)}
+.hero__contact a::after{content:"";position:absolute;left:0;bottom:-2px;width:100%;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.hero__contact a:hover::after{transform:scaleX(1)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2.4rem}
+.btn{
+  font-family:var(--sans);font-weight:600;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+  padding:.92em 1.45em;border:1px solid var(--ink);color:var(--ink);
+  display:inline-flex;align-items:center;gap:.55em;position:relative;overflow:hidden;
+  transition:color .4s var(--ease),border-color .4s;
+}
+.btn span{position:relative;z-index:1}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .45s var(--ease);z-index:0}
+.btn:hover{color:var(--paper)}
+.btn:hover::before{transform:translateY(0)}
+.btn--gold{border-color:var(--gold)}
+.btn--gold::before{background:var(--gold)}
+.btn--gold:hover{color:var(--ink);border-color:var(--gold)}
+.btn svg{width:14px;height:14px;position:relative;z-index:1;transition:transform .35s var(--ease)}
+.btn:hover svg{transform:translate(3px,-3px)}
+.btn--dl:hover svg{transform:translateY(3px)}
+
+/* portrait */
+.hero__aside{position:relative;display:flex;align-items:center;gap:clamp(1.6rem,2.4vw,2.2rem)}
+.portrait{position:relative;width:clamp(180px,17vw,224px);flex:none;margin:0}
+.portrait__frame{
+  position:absolute;inset:0;border:1.5px solid var(--gold);
+  transform:translate(18px,18px);transition:transform .6s var(--ease);z-index:0;
+}
+.portrait__img{
+  position:relative;z-index:1;overflow:hidden;border:1px solid var(--ink);
+  background:var(--navy);aspect-ratio:4/5;
+  transition:transform .6s var(--ease);
+}
+.portrait__img::after{
+  content:"";position:absolute;inset:0;background:var(--navy-2);mix-blend-mode:screen;opacity:.5;
+  transition:opacity .8s var(--ease);pointer-events:none;z-index:2;
+}
+.portrait__img::before{
+  content:"DM";position:absolute;inset:0;display:grid;place-items:center;z-index:0;
+  font-family:var(--sans);font-weight:800;font-size:5rem;color:#1d3354;letter-spacing:.05em;
+}
+.portrait__img img{
+  width:100%;height:100%;object-fit:cover;position:relative;z-index:1;
+  filter:grayscale(1) contrast(1.06) brightness(1.05);
+  transition:filter .8s var(--ease),transform .8s var(--ease);
+}
+.portrait:hover .portrait__img{transform:translate(-6px,-6px)}
+.portrait:hover .portrait__frame{transform:translate(10px,10px)}
+.portrait:hover .portrait__img::after{opacity:0}
+.portrait:hover .portrait__img img{filter:grayscale(0) contrast(1) brightness(1);transform:scale(1.03)}
+.hero__badges{display:flex;flex-direction:column;align-items:stretch;gap:.7rem;margin:0;min-width:0}
+.badge{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.72em 1.05em;border:1px solid var(--line-strong);color:var(--ink-soft);
+  display:inline-flex;align-items:center;gap:.55em;transition:border-color .3s,color .3s;
+}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
+.badge:hover{border-color:var(--gold);color:var(--ink)}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{
+  position:relative;z-index:2;background:var(--ink);color:var(--paper);
+  overflow:hidden;padding:.95rem 0;margin-top:2rem;
+  border-block:1px solid var(--navy-2);
+}
+.marquee__track{display:flex;white-space:nowrap;width:max-content;animation:marquee 34s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__track span{
+  font-family:var(--sans);font-weight:600;font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:0 1.6rem;display:inline-flex;align-items:center;
+}
+.marquee__track span::before{content:"◆";color:var(--gold-2);margin-right:1.6rem;font-size:.6rem}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   SECTION SCAFFOLD
+   ============================================================ */
+.section{position:relative;z-index:2;padding-block:clamp(4rem,9vw,8.5rem);scroll-margin-top:90px}
+.section + .section{border-top:1px solid var(--line)}
+.sec-head{margin-bottom:clamp(2.5rem,5vw,4rem)}
+.sec-head__top{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.4rem}
+.sec-head__num{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;color:var(--gold)}
+.sec-head__label{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.sec-head__rule{flex:1;height:1px;background:var(--line-strong);transform-origin:left;transform:scaleX(0);transition:transform 1.1s var(--ease)}
+.section.in .sec-head__rule{transform:scaleX(1)}
+.sec-head__title{
+  font-family:var(--sans);font-variation-settings:'wght' 820,'wdth' 112;
+  text-transform:uppercase;letter-spacing:-.01em;line-height:.95;
+  font-size:clamp(2.1rem,5.4vw,4rem);color:var(--ink);
+}
+.sec-head__sub{
+  font-family:var(--serif);font-style:italic;font-weight:380;
+  font-size:clamp(1.05rem,1.8vw,1.4rem);color:var(--ink-soft);margin-top:1rem;max-width:40ch;
+}
+
+/* reveal */
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+[data-reveal].in{opacity:1;transform:none}
+
+/* ============================================================
+   PROFILE
+   ============================================================ */
+.profile__grid{display:grid;grid-template-columns:1.7fr 1fr;gap:clamp(2.5rem,6vw,5.5rem);align-items:start}
+.lede{
+  font-family:var(--serif);font-weight:360;
+  font-size:clamp(1.25rem,2.4vw,1.85rem);line-height:1.42;color:var(--ink-soft);
+}
+.lede .drop{
+  float:left;font-family:var(--serif);font-weight:600;
+  font-size:5.6em;line-height:.72;padding:.06em .12em 0 0;color:var(--ink);
+}
+.lede .k{color:var(--ink);font-weight:560}
+.lede .g{color:var(--gold);font-weight:560;font-style:italic}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:var(--paper);padding:1.5rem 1.4rem;transition:background .4s}
+.stat:hover{background:var(--paper-2)}
+.stat__num{
+  font-family:var(--sans);font-variation-settings:'wght' 800,'wdth' 105;
+  font-size:clamp(2.4rem,5vw,3.4rem);line-height:1;color:var(--ink);display:block;
+}
+.stat__num sup{color:var(--gold);font-size:.5em;top:-.7em}
+.stat__lab{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:.7rem;display:block}
+
+/* ============================================================
+   ACCORDION (experience + training)
+   ============================================================ */
+.acc{border-top:1px solid var(--line)}
+.acc:last-child{border-bottom:1px solid var(--line)}
+.acc__head{
+  width:100%;text-align:left;display:grid;grid-template-columns:10rem 1fr auto;
+  gap:1.5rem;align-items:baseline;padding:1.8rem 0;transition:padding .3s;
+}
+.acc__meta{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;color:var(--gold);padding-top:.35rem}
+.acc__org{
+  font-family:var(--sans);font-weight:700;font-variation-settings:'wght' 720,'wdth' 100;
+  font-size:clamp(1.15rem,2.2vw,1.6rem);letter-spacing:-.005em;color:var(--ink);
+  transition:color .3s;display:block;
+}
+.acc__role{font-family:var(--serif);font-style:italic;font-weight:380;font-size:.98rem;color:var(--muted);margin-top:.5rem;display:block;line-height:1.4}
+.acc__icon{position:relative;width:24px;height:24px;align-self:center;color:var(--gold);flex:0 0 auto}
+.acc__icon::before,.acc__icon::after{content:"";position:absolute;background:currentColor;transition:transform .4s var(--ease),opacity .4s}
+.acc__icon::before{left:2px;right:2px;top:50%;height:1.5px;transform:translateY(-50%)}
+.acc__icon::after{top:2px;bottom:2px;left:50%;width:1.5px;transform:translateX(-50%)}
+.acc.open .acc__icon::after{transform:translateX(-50%) scaleY(0)}
+.acc:hover .acc__org{color:var(--blue)}
+.acc__panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--ease)}
+.acc.open .acc__panel{grid-template-rows:1fr}
+.acc__panel-inner{overflow:hidden;min-height:0}
+.acc__body{
+  opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease) .05s,transform .45s var(--ease) .05s;
+  padding-left:11.5rem;padding-bottom:2rem;max-width:74ch;
+}
+.acc.open .acc__body{opacity:1;transform:none}
+.acc__list li{
+  font-family:var(--sans);font-weight:400;font-size:1rem;line-height:1.62;color:var(--ink-soft);
+  padding-left:1.5rem;position:relative;margin-bottom:1rem;
+}
+.acc__list li::before{content:"";position:absolute;left:0;top:.65em;width:8px;height:1.5px;background:var(--gold)}
+.acc__list li:last-child{margin-bottom:0}
+.acc__list b{font-weight:680;color:var(--ink)}
+
+/* ============================================================
+   SKILLS
+   ============================================================ */
+.skill{
+  display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:1.5rem 2.5rem;
+  padding:1.8rem 0;border-top:1px solid var(--line);transition:background .4s;align-items:baseline;
+}
+.skill:last-child{border-bottom:1px solid var(--line)}
+.skill__label{
+  font-family:var(--sans);font-weight:700;font-variation-settings:'wght' 720,'wdth' 108;
+  text-transform:uppercase;letter-spacing:.06em;font-size:.92rem;color:var(--ink);
+  display:flex;align-items:center;gap:.7rem;
+}
+.skill__label::before{content:"";width:9px;height:9px;background:var(--gold);transform:rotate(45deg);flex:0 0 auto}
+.skill__body{font-family:var(--sans);font-weight:380;font-size:1.04rem;line-height:1.62;color:var(--ink-soft)}
+.skill__body b{font-weight:680;color:var(--ink)}
+
+/* ============================================================
+   RECOGNITION (navy feature)
+   ============================================================ */
+.awards{
+  position:relative;z-index:2;color:var(--paper);
+  background:radial-gradient(1200px 600px at 80% -10%,var(--navy-2),var(--navy) 60%);
+  border-block:1px solid var(--navy-2);scroll-margin-top:90px;
+  padding-block:clamp(4.5rem,9vw,9rem);overflow:hidden;
+}
+.awards::before{
+  content:"";position:absolute;inset:0;opacity:.5;pointer-events:none;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:80px 100%;
+  -webkit-mask-image:radial-gradient(80% 80% at 70% 20%,#000,transparent);mask-image:radial-gradient(80% 80% at 70% 20%,#000,transparent);
+}
+.awards .sec-head__label,.awards .sec-head__num{color:var(--gold-2)}
+.awards .sec-head__label{color:#9fb0c6}
+.awards .sec-head__num{color:var(--gold-2)}
+.awards .sec-head__rule{background:rgba(255,255,255,.18)}
+.awards .sec-head__title{color:var(--white)}
+.awards .sec-head__sub{color:#aebccd}
+
+.emmy{
+  display:grid;grid-template-columns:auto 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center;
+  padding:clamp(1.8rem,3vw,2.6rem) 0;border-top:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:clamp(2.5rem,5vw,4rem);
+}
+.emmy__star{
+  width:clamp(70px,12vw,120px);height:clamp(70px,12vw,120px);flex:0 0 auto;color:var(--gold-2);
+  filter:drop-shadow(0 6px 24px rgba(216,180,106,.25));animation:spin 26s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.emmy__txt .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-2)}
+.emmy__txt h3{
+  font-family:var(--sans);font-variation-settings:'wght' 840,'wdth' 116;text-transform:uppercase;
+  font-size:clamp(2rem,5vw,3.4rem);line-height:.95;color:var(--white);margin:.4rem 0 .6rem;letter-spacing:-.01em;
+}
+.emmy__txt p{font-family:var(--serif);font-style:italic;font-size:clamp(1.05rem,2vw,1.4rem);color:#cdd7e3;font-weight:380}
+.emmy__txt p b{color:var(--gold-3);font-style:normal;font-weight:600}
+
+.award-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(2rem,4vw,3.5rem)}
+.award-col h4{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#9fb0c6;
+  padding-bottom:1rem;margin-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,.14);
+}
+.award-col li{
+  font-family:var(--sans);font-weight:400;font-size:.98rem;line-height:1.45;color:#dfe5ec;
+  padding-left:1.4rem;position:relative;margin-bottom:1.05rem;transition:color .3s,transform .3s var(--ease);
+}
+.award-col li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:7px;border:1px solid var(--gold-2);transform:rotate(45deg);transition:background .3s}
+.award-col li:hover{color:var(--white);transform:translateX(4px)}
+.award-col li:hover::before{background:var(--gold-2)}
+.award-col li b{color:#fff;font-weight:600}
+.award-col li .sub{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:#8fa0b6;margin-top:.2rem}
+
+/* ============================================================
+   EDUCATION
+   ============================================================ */
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.edu{
+  border:1px solid var(--line);padding:1.9rem 1.8rem;position:relative;overflow:hidden;
+  transition:transform .45s var(--ease),border-color .45s,box-shadow .45s;background:var(--paper);
+}
+.edu::after{content:"";position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 28px 28px 0;border-color:transparent var(--gold) transparent transparent;opacity:0;transition:opacity .4s}
+.edu:hover{transform:translateY(-5px);border-color:var(--line-strong);box-shadow:0 18px 40px -28px rgba(16,29,46,.4)}
+.edu:hover::after{opacity:1}
+.edu__deg{font-family:var(--sans);font-weight:700;font-variation-settings:'wght' 720,'wdth' 104;font-size:1.18rem;color:var(--ink);line-height:1.2;letter-spacing:-.005em}
+.edu__spec{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--gold);font-size:1rem;margin-top:.45rem}
+.edu__school{font-family:var(--sans);font-weight:500;color:var(--ink-soft);margin-top:1rem;font-size:.98rem}
+.edu__meta{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--muted);margin-top:.7rem;line-height:1.5}
+
+/* ============================================================
+   WORK SAMPLES
+   ============================================================ */
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line)}
+.work{
+  position:relative;padding:2.2rem 2rem;display:flex;flex-direction:column;gap:.8rem;min-height:200px;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--paper);overflow:hidden;transition:color .5s var(--ease);
+}
+.work:nth-child(2n){border-right:none}
+.work::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .5s var(--ease);z-index:0}
+.work:hover{color:var(--paper)}
+.work:hover::before{transform:translateY(0)}
+.work > *{position:relative;z-index:1}
+.work__type{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);transition:color .4s}
+.work:hover .work__type{color:var(--gold-2)}
+.work__title{
+  font-family:var(--serif);font-weight:480;font-size:clamp(1.3rem,2.6vw,1.85rem);line-height:1.18;
+  color:var(--ink);transition:color .5s;margin-top:auto;
+}
+.work:hover .work__title{color:var(--white)}
+.work__title em{font-style:italic;font-weight:420}
+.work__go{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  display:inline-flex;align-items:center;gap:.6em;transition:color .4s;
+}
+.work:hover .work__go{color:var(--paper)}
+.work__go svg{width:14px;height:14px;transition:transform .4s var(--ease)}
+.work:hover .work__go svg{transform:translate(4px,-4px)}
+.work--feature{background:var(--paper-2)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{position:relative;z-index:2;background:var(--ink);color:var(--paper);padding-block:clamp(4rem,8vw,7rem)}
+.footer__grid{display:grid;grid-template-columns:1.4fr 1fr;gap:3rem;align-items:end}
+.footer__name{
+  font-family:var(--sans);font-variation-settings:'wght' 860,'wdth' 120;text-transform:uppercase;
+  font-size:clamp(2.6rem,8vw,6rem);line-height:.85;letter-spacing:-.02em;color:var(--white);
+}
+.footer__name .accent{color:var(--gold-2)}
+.footer__contact{display:flex;flex-direction:column;gap:.7rem;font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;color:#aebccd}
+.footer__contact a{transition:color .3s;display:inline-flex;width:fit-content;position:relative}
+.footer__contact a::after{content:"";position:absolute;left:0;bottom:-2px;width:100%;height:1px;background:var(--gold-2);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.footer__contact a:hover{color:var(--white)}
+.footer__contact a:hover::after{transform:scaleX(1)}
+.endmark{
+  display:flex;align-items:center;gap:1.5rem;margin-top:clamp(3rem,6vw,5rem);
+  font-family:var(--serif);font-style:italic;font-size:1.4rem;color:var(--gold-2);justify-content:center;
+}
+.endmark .l{flex:1;height:1px;background:rgba(255,255,255,.15);max-width:200px}
+.footer__fine{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;margin-top:2.5rem;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:#7b8aa0;text-transform:uppercase;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+/* click-to-copy toast */
+.copytoast{
+  position:fixed;left:50%;bottom:2rem;transform:translate(-50%,1.2rem);
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.85em 1.4em;z-index:200;border:1px solid var(--gold);
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease);
+}
+.copytoast.show{opacity:1;transform:translate(-50%,0)}
+.copymail{cursor:pointer}
+.copymail.copied{color:var(--gold)!important}
+
+@media (max-width:980px){
+  .nav__links{display:none}
+  .hero__grid{grid-template-columns:1fr;gap:3rem}
+  .hero__aside{order:-1;flex-direction:column;align-items:center;gap:1.9rem}
+  .portrait{width:100%;max-width:280px}
+  .hero__badges{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center}
+  .profile__grid{grid-template-columns:1fr;gap:3rem}
+  .award-cols{grid-template-columns:1fr;gap:2.5rem}
+  .footer__grid{grid-template-columns:1fr;gap:2.5rem;align-items:start}
+}
+@media (max-width:760px){
+  .hero{padding-top:6.5rem}
+  .acc__head{grid-template-columns:1fr auto;gap:1rem;padding:1.5rem 0}
+  .acc__meta{grid-column:1/-1;padding-top:0;margin-bottom:-.4rem}
+  .acc__body{padding-left:0}
+  .skill{grid-template-columns:1fr;gap:.8rem;padding:1.5rem 0}
+  .stats{grid-template-columns:1fr 1fr}
+  .edu-grid{grid-template-columns:1fr}
+  .work-grid{grid-template-columns:1fr}
+  .work{border-right:none}
+  .emmy{grid-template-columns:1fr;text-align:center;justify-items:center}
+}
+@media (max-width:600px){
+  .hero__cta{flex-direction:column;align-items:stretch}
+  .btn{justify-content:center}
+}
+@media (max-width:420px){
+  .stats{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.001ms!important}
+  [data-reveal]{opacity:1!important;transform:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Primary">
+  <a href="#top" class="brand"><span class="mk"></span>Devin Michaels</a>
+  <div class="nav__links">
+    <a href="#profile">Profile</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#recognition">Awards</a>
+    <a href="#education">Education</a>
+    <a href="#training">Training</a>
+    <a href="#work">Work</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero__grid container">
+    <div class="hero__main">
+      <p class="hero__eyebrow eyebrow" style="animation-delay:.05s"><span>Curriculum Vitae</span><span class="dot"></span><span>Garden Grove, CA</span></p>
+      <h1 class="hero__name">
+        <span style="animation-delay:.18s">Devin</span>
+        <span style="animation-delay:.3s">Michaels</span>
+      </h1>
+      <p class="hero__roles" style="animation-delay:.52s">Writer <i>·</i> Editor <i>·</i> Digital Media <i>·</i> Content Creator</p>
+      <p class="hero__lede" style="animation-delay:.64s"><span class="g">Emmy Award&#8211;winning</span> multimedia producer and <span class="k">U.S. Air&nbsp;Force veteran</span> telling stories across photography, video, design, and the written page.</p>
+      <div class="hero__contact" style="animation-delay:.76s">
+        <a href="mailto:devinsmichaels@gmail.com" class="copymail" data-copyemail>devinsmichaels@gmail.com</a>
+        <a href="tel:7144929334">714.492.9334</a>
+        <span>Garden Grove, CA</span>
+      </div>
+      <div class="hero__cta" style="animation-delay:.86s">
+        <a href="#work" class="btn"><span>View Work</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="mailto:devinsmichaels@gmail.com" class="btn btn--gold" data-copyemail><span>Get in Touch</span></a>
+        <a href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,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" download="Devin_Michaels_Resume.docx" class="btn btn--dl"><span>ATS Download</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v11M8 11l4 4 4-4M5 20h14"/></svg></a>
+      </div>
+    </div>
+    <div class="hero__aside" style="animation-delay:.3s">
+      <figure class="portrait">
+        <div class="portrait__frame" aria-hidden="true"></div>
+        <div class="portrait__img">
+          <img src="https://raw.githubusercontent.com/devinsmichaels/image/main/devin-small-file-size.jpg" alt="Portrait of Devin Michaels" loading="eager" onerror="this.style.display='none'">
+        </div>
+      </figure>
+      <div class="hero__badges" style="animation-delay:.9s">
+        <span class="badge">Emmy Winner</span>
+        <span class="badge">USAF Veteran</span>
+        <span class="badge">Published Writer</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" id="marquee">
+    <span>Emmy Award Winner</span><span>U.S. Air Force Veteran</span><span>14+ Years Multimedia</span><span>AP-Style Authority</span><span>Adobe Creative Cloud</span><span>Photography &amp; Video</span><span>Podcast Production</span><span>Social Strategy</span><span>Project Management</span>
+    <span>Emmy Award Winner</span><span>U.S. Air Force Veteran</span><span>14+ Years Multimedia</span><span>AP-Style Authority</span><span>Adobe Creative Cloud</span><span>Photography &amp; Video</span><span>Podcast Production</span><span>Social Strategy</span><span>Project Management</span>
+  </div>
+</div>
+
+<main>
+<!-- PROFILE -->
+<section class="section" id="profile">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">01</span>
+        <span class="sec-head__label">Profile</span>
+        <span class="sec-head__rule"></span>
+      </div>
+    </div>
+    <div class="profile__grid">
+      <p class="lede" data-reveal>
+        <span class="drop">M</span>ultimedia professional with <span class="k">14+ years</span> of experience spanning photography, videography, graphic design, writing, editing, podcasting, and project management. An <span class="g">Emmy Award&#8211;winning</span> content producer and <span class="k">U.S. Air Force veteran</span> with proven leadership of communications operations and creative production across <em>government, military, and freelance</em> contexts &#8212; backed by deep <span class="k">Adobe Creative Cloud</span> fluency and <span class="k">AP-style</span> writing authority.
+      </p>
+      <div class="stats" data-reveal style="--d:.12s">
+        <div class="stat"><span class="stat__num" data-count="14" data-suffix="+">0</span><span class="stat__lab">Years multimedia</span></div>
+        <div class="stat"><span class="stat__num" data-count="1" data-pad="2">0</span><span class="stat__lab">Emmy Award</span></div>
+        <div class="stat"><span class="stat__num" data-count="700" data-suffix="+">0</span><span class="stat__lab">Employee org served</span></div>
+        <div class="stat"><span class="stat__num" data-count="200">0</span><span class="stat__lab">Podcast episodes</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="section" id="experience">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">02</span>
+        <span class="sec-head__label">Experience</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Experience</h2>
+      <p class="sec-head__sub">From combat zones and base newsrooms to county campaigns and the freelance bureau.</p>
+    </div>
+
+    <!-- Item 1 (open by default) -->
+    <div class="acc open" data-reveal>
+      <button class="acc__head" aria-expanded="true" aria-controls="exp-1">
+        <span class="acc__meta">Nov 2018 &#8212; Apr 2024</span>
+        <span class="acc__title">
+          <span class="acc__org">Riverside County District Attorney&#8217;s Office</span>
+          <span class="acc__role">Publications Creative Lead · Web Content Manager · Associate Social Media Manager · Lead Scriptwriter · Final Copy Editor</span>
+        </span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="exp-1" role="region">
+        <div class="acc__panel-inner">
+          <div class="acc__body">
+            <ul class="acc__list">
+              <li>Led <b>publications creative direction</b> and <b>web content management</b> for a <b>700+ employee</b> public organization.</li>
+              <li>Directed <b>social media strategy</b> and content production across Instagram, Facebook, Twitter, LinkedIn, and YouTube.</li>
+              <li>Authored scripts and performed <b>final copy editing</b> for video productions, marketing campaigns, and public-information materials.</li>
+              <li>Co-produced the <b>Emmy Award&#8211;winning</b> short PSA &#8220;Faces of Fentanyl&#8221;; earned three County of Riverside Awards of Distinction, the PRSA Inland Empire Polaris Award, and Countywide Administration Employee of the Year.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 2 -->
+    <div class="acc" data-reveal style="--d:.08s">
+      <button class="acc__head" aria-expanded="false" aria-controls="exp-2">
+        <span class="acc__meta">Jul 2015 &#8212; Present</span>
+        <span class="acc__title">
+          <span class="acc__org">Freelance / Contractor</span>
+          <span class="acc__role">AP-Style Journalist · Scriptwriter · Photographer · Videographer · Web Designer · Podcast Editor · Graphic Designer</span>
+        </span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="exp-2" role="region">
+        <div class="acc__panel-inner">
+          <div class="acc__body">
+            <ul class="acc__list">
+              <li>Provide <b>editorial, photography, video, web, and audio</b> production services to a roster of recurring clients.</li>
+              <li>Serve as <b>editor and web designer</b> for the Transition Drill Podcast through <b>episode 200</b>, including audio post-production and ongoing site management.</li>
+              <li>Deliver AP-style articles, branded scripts, graphic design, and full video productions on contract.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 3 -->
+    <div class="acc" data-reveal style="--d:.16s">
+      <button class="acc__head" aria-expanded="false" aria-controls="exp-3">
+        <span class="acc__meta">May 2013 &#8212; Jul 2015</span>
+        <span class="acc__title">
+          <span class="acc__org">U.S. Air Force &#8212; Public Affairs</span>
+          <span class="acc__role">Combat &amp; Base Photographer · AP-Style Journalist · Graphic Designer · Layout &amp; Design Editor · Final Copy Editor</span>
+        </span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="exp-3" role="region">
+        <div class="acc__panel-inner">
+          <div class="acc__body">
+            <ul class="acc__list">
+              <li>Photographed <b>combat operations</b>, base activities, portraiture, sports, and live events under Department of Defense communications standards.</li>
+              <li>Wrote AP-style features published on <b>af.mil</b>, including &#8220;A Tale of Two Sisters&#8221; and &#8220;Air Force Future Tech: Laser-Equipped Aircraft.&#8221;</li>
+              <li>Served as graphic designer, layout and design editor, and final copy editor for unit publications.</li>
+              <li>Recipient of the <b>Air Force Outstanding Unit Award</b>, National Defense Service Medal, and Global War on Terrorism Medal. Held an active <b>Secret Clearance</b>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">03</span>
+        <span class="sec-head__label">Capabilities</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Skills</h2>
+      <p class="sec-head__sub">Fluent across the Adobe stack and the full multimedia pipeline &#8212; story to screen.</p>
+    </div>
+
+    <div class="skill" data-reveal>
+      <div class="skill__label">Software</div>
+      <div class="skill__body">Adobe Creative Cloud (<b>Photoshop</b>, <b>InDesign</b>, <b>Premiere</b>, <b>After Effects</b>, <b>Lightroom</b>, <b>Illustrator</b>, Dimension, XD, Audition); Microsoft Office Suite (Word, Excel, PowerPoint, Outlook); Apple (<b>Final Cut Pro</b>, GarageBand, iMovie); Google Suite (Docs, Sheets, Slides, Drive, Calendar); Prezi; VideoScribe; <b>Canva</b>; Photo Mechanic.</div>
+    </div>
+    <div class="skill" data-reveal style="--d:.06s">
+      <div class="skill__label">Multimedia</div>
+      <div class="skill__body"><b>Photography</b> (portraiture, event, creative fine art); <b>videography</b> and video editing; graphic design and layout editing; image alteration, replication, and repair; <b>social content production</b> (Instagram, Facebook, Twitter, LinkedIn, YouTube); animation and video production; <b>podcast development</b> and branding.</div>
+    </div>
+    <div class="skill" data-reveal style="--d:.12s">
+      <div class="skill__label">Leadership</div>
+      <div class="skill__body">Planning and executing multimedia projects; <b>training and mentoring</b> teams in multimedia skills; managing social media accounts for organizations of <b>700+ employees</b>.</div>
+    </div>
+    <div class="skill" data-reveal style="--d:.18s">
+      <div class="skill__label">Writing &amp; Editing</div>
+      <div class="skill__body"><b>Associated Press style</b> adherence; newspaper editing and production; article writing and story development.</div>
+    </div>
+    <div class="skill" data-reveal style="--d:.24s">
+      <div class="skill__label">AI &amp; Emerging</div>
+      <div class="skill__body"><b>Generative AI</b> in Adobe Creative Cloud and Canva; strong working familiarity with <b>Claude</b> and <b>ChatGPT</b>.</div>
+    </div>
+    <div class="skill" data-reveal style="--d:.3s">
+      <div class="skill__label">Soft Skills</div>
+      <div class="skill__body">Integrative thinking, professional communication, digital systemization, and troubleshooting.</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- RECOGNITION (navy feature) -->
+<section class="awards" id="recognition">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">04</span>
+        <span class="sec-head__label">Recognition</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Honors &amp; Decorations</h2>
+      <p class="sec-head__sub">Selected awards across press, county service, and the armed forces.</p>
+    </div>
+
+    <div class="emmy" data-reveal>
+      <svg class="emmy__star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.5l2.9 6.4 7 .7-5.2 4.7 1.5 6.9L12 17.8 5.8 20.9l1.5-6.9L2.1 8.6l7-.7L12 1.5z"/></svg>
+      <div class="emmy__txt">
+        <span class="label">Emmy Award &#8212; Short PSA</span>
+        <h3>Faces of Fentanyl</h3>
+        <p>Co-produced the <b>Emmy Award&#8211;winning</b> public-service announcement &#8212; the centerpiece of a multi-award county campaign.</p>
+      </div>
+    </div>
+
+    <div class="award-cols">
+      <div class="award-col" data-reveal>
+        <h4>County of Riverside</h4>
+        <ul>
+          <li><b>Award of Distinction</b><span class="sub">Marketing Campaign</span></li>
+          <li><b>Award of Distinction</b><span class="sub">Media Event</span></li>
+          <li><b>Award of Distinction</b><span class="sub">Video Production, In-House</span></li>
+          <li><b>Employee of the Year</b><span class="sub">Countywide Administration</span></li>
+          <li><b>Employee of the Quarter</b><span class="sub">District Attorney&#8217;s Office &#215;2</span></li>
+        </ul>
+      </div>
+      <div class="award-col" data-reveal style="--d:.1s">
+        <h4>Press &amp; Public Relations</h4>
+        <ul>
+          <li><b>PRSA Polaris Award</b><span class="sub">Inland Empire &#183; PR Campaign</span></li>
+          <li><b>JACC State, 1st Place</b><span class="sub">Photo Story Essay</span></li>
+          <li><b>JACC State, 2nd Place</b><span class="sub">Creative Portrait &#215;2</span></li>
+          <li><b>JACC State, 3rd Place</b><span class="sub">Team Feature</span></li>
+          <li><b>JACC SoCal, 3rd Place</b><span class="sub">Layout Design</span></li>
+        </ul>
+      </div>
+      <div class="award-col" data-reveal style="--d:.2s">
+        <h4>Military Service</h4>
+        <ul>
+          <li><b>Air Force Outstanding Unit Award</b></li>
+          <li><b>National Defense Service Medal</b></li>
+          <li><b>Global War on Terrorism Medal</b></li>
+          <li><b>Secret Clearance</b><span class="sub">Held during service</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+<!-- EDUCATION -->
+<section class="section" id="education">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">05</span>
+        <span class="sec-head__label">Education</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Education</h2>
+      <p class="sec-head__sub">Communication, journalism, and project management &#8212; the foundations.</p>
+    </div>
+    <div class="edu-grid">
+      <article class="edu" data-reveal>
+        <h3 class="edu__deg">Bachelor of Arts, Interdisciplinary Studies</h3>
+        <p class="edu__spec">Project Management Specialization</p>
+        <p class="edu__school">Colorado State University Global</p>
+        <p class="edu__meta">GPA 3.7</p>
+      </article>
+      <article class="edu" data-reveal style="--d:.08s">
+        <h3 class="edu__deg">Associate of Arts, Communication Studies</h3>
+        <p class="edu__spec">Vice President, STEM Club</p>
+        <p class="edu__school">Orange Coast College</p>
+        <p class="edu__meta">GPA 3.7 &#183; Photo Editor and Layout &amp; Design Editor, school paper</p>
+      </article>
+      <article class="edu" data-reveal style="--d:.16s">
+        <h3 class="edu__deg">Multimedia Journalism</h3>
+        <p class="edu__spec">Defense Information School</p>
+        <p class="edu__school">U.S. Department of Defense</p>
+        <p class="edu__meta">Graduated November 2013</p>
+      </article>
+      <article class="edu" data-reveal style="--d:.24s">
+        <h3 class="edu__deg">Basic Military Training</h3>
+        <p class="edu__spec">U.S. Air Force</p>
+        <p class="edu__school">Lackland AFB</p>
+        <p class="edu__meta">Graduated July 2013 &#183; Secret Clearance</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING -->
+<section class="section" id="training">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">06</span>
+        <span class="sec-head__label">Continuing Education</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Training &amp; Certifications</h2>
+      <p class="sec-head__sub">Still sharpening the edge &#8212; tap any entry to read more.</p>
+    </div>
+
+    <div class="acc" data-reveal>
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-1">
+        <span class="acc__meta">2026</span>
+        <span class="acc__title"><span class="acc__org">HubSpot Academy &#8212; Digital Marketing Certification</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-1" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li>Inbound practices, <b>SEO content creation</b>, website optimization, social media strategy, video engagement, digital advertising, and campaign measurement.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.05s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-2">
+        <span class="acc__meta">2025</span>
+        <span class="acc__title"><span class="acc__org">CBRE Project Management Job Simulation &#8212; Forage</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-2" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li>Reviewed a showroom project plan for a global high-end kitchen-appliance manufacturer; developed a <b>Gantt chart</b>; assessed risks and dependencies.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.1s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-3">
+        <span class="acc__meta">2023</span>
+        <span class="acc__title"><span class="acc__org">CAPIO Conference &#8212; Public Information Officials</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-3" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li>California Public Information Officials &#8212; an <b>emergency communications</b> and leadership summit.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.15s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-4">
+        <span class="acc__meta">2023</span>
+        <span class="acc__title"><span class="acc__org">CDAA Conference &#8212; Deputy District Attorneys Assn.</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-4" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li>California Deputy District Attorneys Association &#8212; investigation tactics and the California legal landscape.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.2s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-5">
+        <span class="acc__meta">2019</span>
+        <span class="acc__title"><span class="acc__org">Intro to Podcasting</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-5" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li>A <b>six-week</b> production bootcamp covering recording, editing, and publishing.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.25s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-6">
+        <span class="acc__meta">2018</span>
+        <span class="acc__title"><span class="acc__org">Machine Learning Seminar</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-6" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li><b>AI and neural-network</b> applications across education, economy, military, and government.</li></ul>
+      </div></div></div>
+    </div>
+
+    <div class="acc" data-reveal style="--d:.3s">
+      <button class="acc__head" aria-expanded="false" aria-controls="trn-7">
+        <span class="acc__meta">2015</span>
+        <span class="acc__title"><span class="acc__org">Medical &amp; Emergency Training</span></span>
+        <span class="acc__icon" aria-hidden="true"></span>
+      </button>
+      <div class="acc__panel" id="trn-7" role="region"><div class="acc__panel-inner"><div class="acc__body">
+        <ul class="acc__list"><li><b>CPR and Self-Aid Buddy Care</b> &#8212; triage, airway management, bleeding control, shock management, dressing and splinting, and patient transport.</li></ul>
+      </div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="section" id="work">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-head__top">
+        <span class="sec-head__num">07</span>
+        <span class="sec-head__label">Portfolio</span>
+        <span class="sec-head__rule"></span>
+      </div>
+      <h2 class="sec-head__title">Selected Work</h2>
+      <p class="sec-head__sub">A few pieces worth your time &#8212; read, watch, and listen.</p>
+    </div>
+    <div class="work-grid">
+      <a class="work work--feature" href="https://www.youtube.com/watch?v=eQDteAIjMeE" target="_blank" rel="noopener noreferrer" data-reveal>
+        <span class="work__type">Emmy-Winning PSA &#183; YouTube</span>
+        <span class="work__title"><em>Faces of Fentanyl</em></span>
+        <span class="work__go">Watch <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="work" href="https://www.af.mil/News/Article-Display/Article/493873/tale-of-two-sisters-how-education-helped-shape-two-airmens-careers/" target="_blank" rel="noopener noreferrer" data-reveal style="--d:.06s">
+        <span class="work__type">Feature Article &#183; af.mil</span>
+        <span class="work__title"><em>A Tale of Two Sisters</em></span>
+        <span class="work__go">Read <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="work" href="https://www.acc.af.mil/News/Features/Display/Article/661982/air-force-future-tech-comacc-talks-laser-equipped-aircraft/" target="_blank" rel="noopener noreferrer" data-reveal style="--d:.12s">
+        <span class="work__type">Feature Article &#183; af.mil</span>
+        <span class="work__title"><em>Air Force Future Tech:</em> Laser-Equipped Aircraft</span>
+        <span class="work__go">Read <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="work" href="https://www.transitiondrillpodcast.com/" target="_blank" rel="noopener noreferrer" data-reveal style="--d:.18s">
+        <span class="work__type">Editor &amp; Web Design &#183; Podcast</span>
+        <span class="work__title">Transition Drill Podcast <em>&#8212; through ep. 200</em></span>
+        <span class="work__go">Listen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="work" href="https://www.af.mil/News/Photos/igphoto/2000794072/" target="_blank" rel="noopener noreferrer" data-reveal style="--d:.24s">
+        <span class="work__type">Photography &#183; af.mil</span>
+        <span class="work__title">Honor Guard <em>&#8212; photograph</em></span>
+        <span class="work__go">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="work" href="mailto:devinsmichaels@gmail.com" data-copyemail data-reveal style="--d:.3s">
+        <span class="work__type">Let&#8217;s collaborate</span>
+        <span class="work__title">Have a project? <em>Get in touch.</em></span>
+        <span class="work__go">Email <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__name">Devin<br><span class="accent">Michaels</span></div>
+      <div class="footer__contact">
+        <a href="mailto:devinsmichaels@gmail.com" class="copymail" data-copyemail>devinsmichaels@gmail.com</a>
+        <a href="tel:7144929334">714.492.9334</a>
+        <span>Garden Grove, California</span>
+      </div>
+    </div>
+    <div class="endmark"><span class="l"></span> &#8212;&#8201;30&#8201;&#8212; <span class="l"></span></div>
+    <div class="footer__fine">
+      <span>Writer · Editor · Digital Media · Content Creator</span>
+      <span>&#169; <span id="year">2026</span> Devin Michaels</span>
+    </div>
+  </div>
+</footer>
+
+<a href="#top" class="totop" id="totop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</a>
+
+<div id="copytoast" class="copytoast" role="status" aria-live="polite">Email copied to clipboard</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- footer year ---- */
+  try{ document.getElementById('year').textContent = new Date().getFullYear(); }catch(e){}
+
+  /* ---- click-to-copy email ---- */
+  (function(){
+    var EMAIL = 'devinsmichaels@gmail.com';
+    var toast = document.getElementById('copytoast');
+    var toastTimer;
+    function showToast(){
+      if(!toast) return;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 1900);
+    }
+    function copyText(text){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise(function(resolve,reject){
+        try{
+          var ta = document.createElement('textarea');
+          ta.value = text; ta.setAttribute('readonly','');
+          ta.style.position='absolute'; ta.style.left='-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta); resolve();
+        }catch(err){ reject(err); }
+      });
+    }
+    var els = document.querySelectorAll('[data-copyemail]');
+    Array.prototype.forEach.call(els, function(el){
+      el.addEventListener('click', function(ev){
+        ev.preventDefault();
+        copyText(EMAIL).then(function(){
+          showToast();
+          if(el.classList.contains('copymail')){
+            el.textContent = 'Copied \u2713';
+            el.classList.add('copied');
+            setTimeout(function(){
+              el.textContent = EMAIL;
+              el.classList.remove('copied');
+            }, 1500);
+          }
+        }).catch(function(){
+          window.location.href = el.getAttribute('href');
+        });
+      });
+    });
+  })();
+
+  /* ---- scroll progress + nav state + back-to-top ---- */
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  var totop = document.getElementById('totop');
+  var ticking = false;
+  function onScroll(){
+    var st = window.pageYOffset || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? (st / h) * 100 : 0;
+    if(progress) progress.style.width = p + '%';
+    if(nav) nav.classList.toggle('scrolled', st > 40);
+    if(totop) totop.classList.toggle('show', st > 600);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if(!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
+  }, {passive:true});
+  onScroll();
+
+  /* ---- reveal on scroll ---- */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  var sections = document.querySelectorAll('.section, .awards');
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    revealEls.forEach(function(el){ io.observe(el); });
+
+    var sio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting) en.target.classList.add('in'); });
+    }, {threshold:0.06});
+    sections.forEach(function(s){ sio.observe(s); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+    sections.forEach(function(s){ s.classList.add('in'); });
+  }
+
+  /* ---- active nav link ---- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav__links a'));
+  var idEls = navLinks.map(function(a){
+    var id = a.getAttribute('href').slice(1);
+    return document.getElementById(id);
+  });
+  if('IntersectionObserver' in window){
+    var current = null;
+    var aio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          var idx = idEls.indexOf(en.target);
+          if(idx > -1){
+            navLinks.forEach(function(l){ l.classList.remove('active'); });
+            navLinks[idx].classList.add('active');
+            current = idx;
+          }
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    idEls.forEach(function(el){ if(el) aio.observe(el); });
+  }
+
+  /* ---- accordion ---- */
+  var heads = document.querySelectorAll('.acc__head');
+  heads.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.acc');
+      var open = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+
+  /* ---- count-up stats ---- */
+  function runCount(el){
+    var target = parseFloat(el.getAttribute('data-count')) || 0;
+    var pad = parseInt(el.getAttribute('data-pad') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    function fmt(v){
+      var s = Math.round(v).toString();
+      if(pad) while(s.length < pad) s = '0' + s;
+      return s + suffix;
+    }
+    if(reduce){ el.textContent = fmt(target); return; }
+    var dur = 1300, start = null;
+    function tick(ts){
+      if(start === null) start = ts;
+      var p = Math.min(1, (ts - start) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(target * eased);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = fmt(target);
+    }
+    requestAnimationFrame(tick);
+  }
+  var statWrap = document.querySelector('.stats');
+  if(statWrap){
+    var nums = statWrap.querySelectorAll('.stat__num');
+    if('IntersectionObserver' in window && !reduce){
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            nums.forEach(runCount);
+            cio.disconnect();
+          }
+        });
+      }, {threshold:0.4});
+      cio.observe(statWrap);
+    } else {
+      nums.forEach(runCount);
+    }
+  }
+
+  /* ---- duplicate marquee if narrow (kept simple; content already doubled) ---- */
+})();
+</script>
+</body>
+</html>
